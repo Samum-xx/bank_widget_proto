@@ -9,7 +9,7 @@ def test_get_mask_card_number_with_spaces():
 def test_get_mask_card_number_with_dashes():
     assert get_mask_card_number("1234-5678-9012-3456") == "123456******1234"
 
-def test_short_card_raises():
+def test_short_card_raises_value_error():
     try:
         get_mask_card_number("12345")
         assert False, "Expected ValueError"
