@@ -18,3 +18,8 @@ def get_mask_card_number(card_number: str) -> str:
     masked_middle = "*" * (len(clean_number) - 10)
 
     return f"{prefix}{masked_middle}{suffix}"
+
+def get_mask_card_number(card_number: str) -> str:
+    if len(card_number) < 10:
+        return card_number  # или обработка ошибки, если номер слишком короткий
+    return card_number[:6] + '*' * (len(card_number) - 10) + card_number[-4:]
