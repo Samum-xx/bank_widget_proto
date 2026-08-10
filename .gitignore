@@ -25,4 +25,5 @@ Thumbs.db
 
 # Archives and temp files
 *.zip
+check_import.py
 bank-widget-clean/
