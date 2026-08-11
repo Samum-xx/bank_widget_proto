@@ -1,26 +1,50 @@
-def mask_account_card(info: str) -> str:
-    parts = info.rsplit(" ", 1)
-    if len(parts) != 2:
-        return info
+from typing import List, Dict, Any
 
-    prefix, number_raw = parts
 
-    if prefix.lower() == "счет":
-        clean_number = "".join(c for c in number_raw if c.isdigit())
-        if len(clean_number) <= 4:
-            masked_number = clean_number
-        else:
-            masked_number = "*" * (len(clean_number) - 4) + clean_number[-4:]
-        return f"{prefix} {masked_number}"
+def mask_card_number(card_number: str) -> str:
+    """
+    Маскирует номер карты: убирает пробелы и дефисы, проверяет длину.
+    Формат вывода: XXXX XXXX XXXX XXXX
+    Если длина после очистки < 16 — выбрасывает ValueError.
+    """
+    cleaned = card_number.replace(" ", "").replace("-", "")
+    if not cleaned.isdigit():
+        raise ValueError("Card number must contain only digits after cleaning.")
+    if len(cleaned) < 16:
+        raise ValueError("Card number is too short.")
 
-    # Для карт: сначала получаем маску через существующую функцию
-    try:
-        masked_card = get_mask_card_number(number_raw)
-        # Теперь добавляем пробелы: 4 цифры, пробел, 4 звёздочки, пробел, 4 звёздочки, пробел, 4 цифры
-        # Предполагаем, что masked_card — это строка из 16 символов после очистки
-        if len(masked_card) == 16:
-            formatted_card = f"{masked_card[:4]} {masked_card[4:8]} {masked_card[8:12]} {masked_card[12:]}"
-            return f"{prefix} {formatted_card}"
-        return f"{prefix} {masked_card}"
-    except ValueError:
-        return f"{prefix} {number_raw}"
+     last_four = cleaned[-4:]
+    masked_part = "XXXX XXXX XXXX"
+    return f"{masked_part} {last_four}"
+
+
+def prepare_operations_widget_data(
+    operations: List[Dict[str, Any]],
+    limit: int = 5
+) -> List[Dict[str, Any]]:
+    """
+    Подготавливает список операций для виджета:
+      - берёт последние `limit` успешных операций,
+      - маскирует номера карт,
+      - возвращает упрощённую структуру для UI.
+    """
+    successful = [op for op in operations if op.get("status") == "success"]
+
+    sorted_ops = sorted(
+        successful,
+        key=lambda x: x.get("created_at", ""),
+        reverse=True
+    )
+
+    result = []
+    for op in sorted_ops[:limit]:
+        card_masked = mask_card_number(op["card_number"])
+        result.append({
+            "id": op["id"],
+            "amount": op["amount"],
+            "currency": op.get("currency", "RUB"),
+            "description": op.get("description", "Операция"),
+            "card_masked": card_masked,
+            "created_at": op["created_at"],
+        })
+    return result
