@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "bank-widget-clean"
+version = "0.1.0"
+description = "Bank widget with masking and operations"
+authors = ["You <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+flake8 = "^7.0.0"
+mypy = "^1.8.0"
+isort = "^5.13.0"
+black = "^24.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# --- Настройки инструментов ---
+[tool.flake8]
+max-line-length = 88
+exclude = [".venv", ".idea", "__pycache__"]
+
+[tool.isort]
+profile = "black"
+line-length = 88
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
