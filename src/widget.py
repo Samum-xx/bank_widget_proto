@@ -3,19 +3,19 @@ from typing import List, Dict, Any
 
 def mask_card_number(card_number: str) -> str:
     """
-    Маскирует номер карты: убирает пробелы и дефисы, проверяет длину.
-    Формат вывода: XXXX XXXX XXXX XXXX
-    Если длина после очистки < 16 — выбрасывает ValueError.
+    Очищает номер карты от пробелов и дефисов, проверяет, что остались только цифры,
+    и что длина не меньше 16. Возвращает маску: XXXX XXXX XXXX XXXX.
     """
     cleaned = card_number.replace(" ", "").replace("-", "")
+
     if not cleaned.isdigit():
         raise ValueError("Card number must contain only digits after cleaning.")
+
     if len(cleaned) < 16:
         raise ValueError("Card number is too short.")
 
-     last_four = cleaned[-4:]
-    masked_part = "XXXX XXXX XXXX"
-    return f"{masked_part} {last_four}"
+    last_four = cleaned[-4:]
+    return f"XXXX XXXX XXXX {last_four}"
 
 
 def prepare_operations_widget_data(
@@ -24,9 +24,11 @@ def prepare_operations_widget_data(
 ) -> List[Dict[str, Any]]:
     """
     Подготавливает список операций для виджета:
-      - берёт последние `limit` успешных операций,
-      - маскирует номера карт,
-      - возвращает упрощённую структуру для UI.
+      - фильтрует успешные операции (status == "success"),
+      - сортирует по времени (created_at) от новых к старым,
+      - берёт первые limit операций,
+      - маскирует номера карт.
+    Возвращает список словарей с полями, нужными для UI.
     """
     successful = [op for op in operations if op.get("status") == "success"]
 

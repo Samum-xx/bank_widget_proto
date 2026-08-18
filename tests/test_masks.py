@@ -15,3 +15,4 @@ def test_short_card_raises_value_error():
         assert False, "Expected ValueError"
     except ValueError:
         pass
+
