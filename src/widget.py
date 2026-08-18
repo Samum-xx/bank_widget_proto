@@ -72,3 +72,17 @@ def prepare_operations_widget_data(
         })
 
     return result
+
+
+def mask_card(card_number: str) -> str:
+    card = card_number.strip()
+    if len(card) < 8:
+        return "****"
+    return card[:4] + "*" * (len(card) - 8) + card[-4:]
+
+
+def mask_account(account_number: str) -> str:
+    acc = account_number.strip()
+    if len(acc) < 8:
+        return "****"
+    return acc[:4] + "*" * (len(acc) - 8) + acc[-4:]
