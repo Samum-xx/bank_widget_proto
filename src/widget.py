@@ -86,3 +86,23 @@ def mask_account(account_number: str) -> str:
     if len(acc) < 8:
         return "****"
     return acc[:4] + "*" * (len(acc) - 8) + acc[-4:]
+
+from datetime import datetime
+
+def parse_date(date_str: str) -> datetime:
+    formats = [
+        "%Y-%m-%d",
+        "%d.%m.%Y",
+        "%Y/%m/%d",
+    ]
+    for fmt in formats:
+        try:
+            return datetime.strptime(date_str, fmt)
+        except ValueError:
+            continue
+    raise ValueError(f"Не удалось распарсить дату: {date_str}")
+
+
+def format_date_for_widget(date_str: str) -> str:
+    dt = parse_date(date_str)
+    return dt.strftime("%d.%m.%Y")
