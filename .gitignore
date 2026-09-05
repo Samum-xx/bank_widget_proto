@@ -34,3 +34,4 @@ htmlcov/
 # Env variables
 .env
 *.env
+*.zip
