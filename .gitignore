@@ -1,29 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Virtual environments
+venv/
+env/
+.env/
+.venv/
+
 # IDE
 .idea/
 .vscode/
+*.swp
+*.swo
 
-# Виртуальные окружения
-venv/
-.venv/
-env/
-
-# Python cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Build artifacts
-dist/
-build/
-*.egg-info/
-
-# Logs and temp files
-*.log
-*.tmp
+# OS
+.DS_Store
 Thumbs.db
 
-# Archives and temp files
-*.zip
-check_import.py
-bank-widget-clean/
+# Testing / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Env variables
+.env
+*.env
