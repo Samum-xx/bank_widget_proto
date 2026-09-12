@@ -5,10 +5,13 @@ description = ""
 authors = ["You <you@example.com>"]
 readme = "README.md"
 package-mode = false
-packages = [{ include = "bank_widget_clean", from = "src" }]
+
+
 
 [tool.poetry.dependencies]
 python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
 pytest = "~8.0.0"
 flake8 = "^7.0.0"
 mypy = "^1.8.0"
@@ -17,7 +20,7 @@ isort = "^5.13.0"
 
 [tool.black]
 line-length = 119
-target-version = ['py39']
+target-version = ["py39"]
 
 [tool.isort]
 profile = "black"

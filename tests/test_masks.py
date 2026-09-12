@@ -1,5 +1,5 @@
 import pytest
-from bank_widget_clean.masks import get_mask_card_number, get_mask_account
+from bank_widget_clean.widget import get_mask_card_number, get_mask_account
 
 
 class TestMasks:
