@@ -1,4 +1,4 @@
-from src.widget import mask_card_number
+from src.bank_widget_clean.widget import mask_card_number
 
 def test_mask_card_number_normal():
     # Обычный случай: номер без пробелов и дефисов

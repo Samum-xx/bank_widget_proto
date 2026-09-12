@@ -1,4 +1,4 @@
-from src.widget import prepare_operations_widget_data
+from src.bank_widget_clean.widget import prepare_operations_widget_data
 
 def test_prepare_operations_filters_only_success():
     ops = [
