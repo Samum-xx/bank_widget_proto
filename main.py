@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 
 # --- Блок настройки путей (делает код рабочим везде: в PyCharm, в Docker, на сервере) ---
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -11,7 +11,6 @@ if src_path not in sys.path:
 
 # Теперь импортируем функцию просто из widget (без приставки src)
 from widget import prepare_operations_widget_data
-
 
 if __name__ == "__main__":
     # Тестовые данные для проверки логики
