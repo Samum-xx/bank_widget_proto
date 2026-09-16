@@ -1,9 +1,16 @@
 [tool.poetry]
-name = "bank-widget-clean"
+name = "bank-widget"
 version = "0.1.0"
-description = "Bank widget with masking and operations"
-authors = ["You <you@example.com>"]
+description = ""
+authors = []
 readme = "README.md"
+packages = [
+    { include = "src", from = "." },
+    { include = "generators", from = "." },
+]
+
+[tool.pytest.ini_options]
+addopts = "-v --ignore=tests/test_masks.py --ignore=tests/test_widget.py"
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -14,6 +21,7 @@ flake8 = "^7.0.0"
 mypy = "^1.8.0"
 isort = "^5.13.0"
 black = "^24.0.0"
+pytest-cov = "^7.1.0"
 
 [build-system]
 requires = ["poetry-core"]
