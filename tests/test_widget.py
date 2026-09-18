@@ -1,48 +1,66 @@
-from src.widget import prepare_operations_widget_data
+import pytest
+from src.widget import mask_account_card, get_date
 
 
-def test_prepare_operations_filters_only_success():
-    ops = [
-        {"id": 1, "status": "success", "card_number": "1111222233334444", "amount": 100, "created_at": "2025-01-02"},
-        {"id": 2, "status": "failed", "card_number": "2222333344445555", "amount": 200, "created_at": "2025-01-03"},
-        {"id": 3, "status": "success", "card_number": "3333444455556666", "amount": 300, "created_at": "2025-01-01"},
-    ]
-    result = prepare_operations_widget_data(ops, limit=5)
-    # Должны остаться только успешные
-    assert len(result) == 2
-    assert all(op["status"] != "failed" for op in ops)  # тут мы не проверяем статус в result, потому что его там нет — это ок
-    ids = [op["id"] for op in result]
-    assert 2 not in ids  # failed операция не попала
+# --- Тесты mask_account_card ---
 
-def test_prepare_operations_sorts_new_first():
-    ops = [
-        {"id": 1, "status": "success", "card_number": "1111222233334444", "amount": 100, "created_at": "2025-01-01"},
-        {"id": 2, "status": "success", "card_number": "2222333344445555", "amount": 200, "created_at": "2025-01-03"},
-        {"id": 3, "status": "success", "card_number": "3333444455556666", "amount": 300, "created_at": "2025-01-02"},
-    ]
-    result = prepare_operations_widget_data(ops, limit=5)
-    # IDs должны идти по убыванию даты: сначала 2 (03), потом 3 (02), потом 1 (01)
-    assert [op["id"] for op in result] == [2, 3, 1]
+@pytest.mark.parametrize("info,expected_prefix", [
+    ("Visa Platinum 7000792289606361", "Visa Platinum"),
+    ("Mastercard 4111111111111111", "Mastercard"),
+    ("Счет 73654108430135874305", "Счет"),
+])
+def test_mask_account_card_valid(info, expected_prefix):
+    result = mask_account_card(info)
+    assert result.startswith(expected_prefix)
+    assert "****" in result or "**" in result
 
-def test_prepare_operations_limits_count():
-    ops = [
-        {"id": i, "status": "success", "card_number": "1111222233334444", "amount": i*10, "created_at": f"2025-01-{i:02d}"}
-        for i in range(1, 11)  # 10 операций
-    ]
-    result = prepare_operations_widget_data(ops, limit=3)
-    # Должно быть ровно 3
-    assert len(result) == 3
 
-def test_prepare_operations_masks_cards():
-    ops = [
-        {
-            "id": 1,
-            "status": "success",
-            "card_number": "1234567890123456",
-            "amount": 100,
-            "created_at": "2025-01-02"
-        }
-    ]
-    result = prepare_operations_widget_data(ops)
-    assert result[0]["card_masked"] == "XXXX XXXX XXXX 3456"
+@pytest.mark.parametrize("bad_input", [
+    "",
+    "   ",
+    "Visa",
+    "Счет",
+    "Visa 7000abc289606361",
+])
+def test_mask_account_card_raises_value_error(bad_input):
+    with pytest.raises(ValueError):
+        mask_account_card(bad_input)
 
+
+def test_mask_account_card_case_insensitive_account():
+    result = mask_account_card("счеТ 73654108430135874305")
+    assert result.startswith("Счет")
+
+
+def test_mask_account_card_unknown_type_masks_as_card():
+    """Неизвестный тип карты маскируется как карта, без ошибки."""
+    result = mask_account_card("UnknownType 1234567890123456")
+    assert "****" in result
+    assert result.startswith("UnknownType")
+
+
+def test_mask_account_card_too_many_numbers():
+    """Строка с двумя числовыми частями вызывает ValueError (строка 20)."""
+    with pytest.raises(ValueError):
+        mask_account_card("Visa 1234 7000792289606361")
+
+
+# --- Тесты get_date ---
+
+@pytest.mark.parametrize("iso_string,expected", [
+    ("2024-03-11T02:26:18.671407", "11.03.2024"),
+    ("2023-12-31T23:59:59", "31.12.2023"),
+    ("2000-01-01T00:00:00", "01.01.2000"),
+])
+def test_get_date_valid(iso_string, expected):
+    assert get_date(iso_string) == expected
+
+
+@pytest.mark.parametrize("bad_date", [
+    "2024/03/11",
+    "not-a-date",
+    "",
+])
+def test_get_date_invalid(bad_date):
+    with pytest.raises(ValueError):
+        get_date(bad_date)
