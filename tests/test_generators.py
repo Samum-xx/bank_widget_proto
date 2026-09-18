@@ -5,37 +5,35 @@ from generators import filter_by_currency, transaction_descriptions, card_number
 def sample_transactions():
     return [
         {"amount": 100, "currency": "RUB", "description": "Оплата связи"},
-        {"amount": 200, "currency": "USD", "description": "Покупка на Amazon"},
+        {"amount": 200, "currency": "USD", "description": "Amazon"},
         {"amount": 300, "currency": "RUB", "description": "Такси"},
-        {"amount": 400, "currency": "EUR", "description": "Отель в Европе"},
+        {"amount": 400, "currency": "EUR", "description": "Отель"},
         {"amount": 500, "currency": "USD"},
     ]
 
 class TestFilterByCurrency:
-    def test_valid_currency_rub(self, sample_transactions):
-        result = list(filter_by_currency(sample_transactions, currency="RUB"))
-        assert len(result) == 2
-        assert all(t["currency"] == "RUB" for t in result)
-
-    def test_valid_currency_usd(self, sample_transactions):
-        result = list(filter_by_currency(sample_transactions, currency="USD"))
-        assert len(result) == 2
-        assert all(t["currency"] == "USD" for t in result)
-
-    def test_valid_currency_eur(self, sample_transactions):
-        result = list(filter_by_currency(sample_transactions, currency="EUR"))
-        assert len(result) == 1
-        # Берем первый элемент списка, потом ключ
-        assert result[0]["amount"] == 400
+    # ПАРАМЕТРИЗАЦИЯ: один тест покрывает все валюты
+    @pytest.mark.parametrize(
+        "currency, expected_count",
+        [
+            ("RUB", 2),
+            ("USD", 2),
+            ("EUR", 1),
+        ],
+    )
+    def test_valid_currency_counts(self, sample_transactions, currency, expected_count):
+        # Превращаем итератор в список только для проверки результата
+        result = list(filter_by_currency(sample_transactions, currency=currency))
+        assert len(result) == expected_count
+        assert all(t["currency"] == currency for t in result)
 
     def test_invalid_currency_raises_error(self, sample_transactions):
         with pytest.raises(ValueError):
             list(filter_by_currency(sample_transactions, currency="JPY"))
 
-    def test_empty_result_for_valid_currency(self, sample_transactions):
+    def test_empty_result_when_no_matches(self, sample_transactions):
         transactions_without_rub = [t for t in sample_transactions if t["currency"] != "RUB"]
         result = list(filter_by_currency(transactions_without_rub, currency="RUB"))
-        # Сравниваем с пустым списком
         assert result == []
 
 
@@ -57,19 +55,18 @@ class TestTransactionDescriptions:
 
 
 class TestCardNumberGenerator:
-    def test_normal_range(self):
-        result = list(card_number_generator(1000, 1005))
-        assert result == [1000, 1001, 1002, 1003, 1004]
-
-    def test_empty_range(self):
-        result = list(card_number_generator(1000, 1000))
-        assert result == []
+    @pytest.mark.parametrize(
+        "start, stop, expected_result",
+        [
+            (1000, 1005, [1000, 1001, 1002, 1003, 1004]),
+            (5, 6, [5]),
+            (10, 10, []),  # Пустой диапазон
+        ],
+    )
+    def test_card_generator_ranges(self, start, stop, expected_result):
+        result = list(card_number_generator(start, stop))
+        assert result == expected_result
 
     def test_invalid_range_raises_error(self):
         with pytest.raises(ValueError):
             list(card_number_generator(1005, 1000))
-
-    def test_single_item_range(self):
-        # Диапазон [5, 6) содержит только число 5
-        result = list(card_number_generator(5, 6))
-        assert result == [5]
