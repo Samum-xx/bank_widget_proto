@@ -1,5 +1,6 @@
 from src.widget import mask_card_number
 
+
 def test_mask_card_number_normal():
     # Обычный случай: номер без пробелов и дефисов
     assert mask_card_number("1234567890123456") == "XXXX XXXX XXXX 3456"

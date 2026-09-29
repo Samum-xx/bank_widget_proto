@@ -1,5 +1,6 @@
 from src.widget import prepare_operations_widget_data
 
+
 def test_prepare_operations_filters_only_success():
     ops = [
         {"id": 1, "status": "success", "card_number": "1111222233334444", "amount": 100, "created_at": "2025-01-02"},
