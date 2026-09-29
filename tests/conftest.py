@@ -1,9 +1,7 @@
+import logging
 import pytest
 
-@pytest.fixture
-def sample_transactions():
-    return [
-        {"currency": "RUB", "amount": 100},
-        {"currency": "USD", "amount": 200},
-        {"currency": "EUR", "amount": 300},
-    ]
+
+@pytest.fixture(autouse=True)
+def set_logging_level():
+    logging.basicConfig(level=logging.DEBUG)
