@@ -18,7 +18,6 @@ def read_json_file(file_path: str) -> List[Dict[str, Any]]:
     """
     path = Path(file_path)
 
-    # Проверка существования файла (закрывает критерий «если файл не найден»)
     if not path.exists():
         return []
 
@@ -26,10 +25,8 @@ def read_json_file(file_path: str) -> List[Dict[str, Any]]:
         with path.open("r", encoding="utf-8") as f:
             data = json.load(f)
     except (json.JSONDecodeError, IOError):
-        # Обработка некорректного JSON или проблем с чтением (закрывает «некорректный JSON»)
         return []
 
-    # Проверка, что данные — это именно список (закрывает «содержит не список»)
     if not isinstance(data, list):
         return []
 

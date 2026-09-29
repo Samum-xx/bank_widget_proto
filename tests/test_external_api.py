@@ -16,7 +16,7 @@ def test_convert_to_rub_usd_success(mock_get):
     """USD: успешный ответ API — конвертируем по курсу."""
     mock_response = requests.Response()
     mock_response.status_code = 200
-    mock_response.json = Mock(return_value={"rates": {"USD": 1.0}})
+    mock_response.json = Mock(return_value={"rates": {"RUB": 1.0}})
     mock_get.return_value = mock_response
     transaction = {"amount": 100, "currency": "USD"}
     result = convert_to_rub(transaction)
@@ -30,7 +30,7 @@ def test_convert_to_rub_eur_success(mock_get):
     """EUR: успешный ответ — конвертируем."""
     mock_response = requests.Response()
     mock_response.status_code = 200
-    mock_response.json = Mock(return_value={"rates": {"EUR": 0.92}})
+    mock_response.json = Mock(return_value={"rates": {"RUB": 0.92}})
     mock_get.return_value = mock_response
     transaction = {"amount": 200, "currency": "EUR"}
     result = convert_to_rub(transaction)

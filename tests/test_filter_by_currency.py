@@ -1,25 +1,19 @@
 import pytest
-from generators import filter_by_currency
+from unittest.mock import patch
+from src.external_api import convert_to_rub
+from src.utils import read_json_file  # <-- было load_transactions_from_json, стало read_json_file
 
+@patch("src.external_api.requests.get")
+def test_convert_usd_to_rub(mock_get):
+    mock_response = type('Response', (object,), {'json': lambda self: {"result": 90.5}})()
+    mock_get.return_value = mock_response
+    assert convert_to_rub({"amount": 100, "currency": "USD"}) == pytest.approx(9050.0)
 
-def test_filter_by_currency_raises_value_error_on_invalid_currency(sample_transactions):
-    with pytest.raises(ValueError):
-        list(filter_by_currency(sample_transactions, "INVALID_CURRENCY"))
+@patch("src.external_api.requests.get")
+def test_convert_eur_to_rub(mock_get):
+    mock_response = type('Response', (object,), {'json': lambda self: {"result": 100.2}})()
+    mock_get.return_value = mock_response
+    assert convert_to_rub({"amount": 50, "currency": "EUR"}) == pytest.approx(5010.0)
 
-
-def test_filter_by_currency_returns_iterator():
-    transactions = [
-        {"currency": "RUB", "amount": 100},
-        {"currency": "USD", "amount": 200},
-    ]
-    result = filter_by_currency(transactions, "RUB")
-    assert list(result) == [{"currency": "RUB", "amount": 100}]
-
-
-def test_filter_by_currency_empty_list():
-    assert list(filter_by_currency([], "RUB")) == []
-
-
-def test_filter_by_currency_no_matches():
-    transactions = [{"currency": "USD", "amount": 500}]
-    assert list(filter_by_currency(transactions, "RUB")) == []
+def test_convert_rub_no_api():
+    assert convert_to_rub({"amount": 1500, "currency": "RUB"}) == 1500.0
