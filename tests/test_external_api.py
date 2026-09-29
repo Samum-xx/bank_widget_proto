@@ -1,5 +1,4 @@
 from unittest.mock import patch, Mock
-
 import requests
 from src.external_api import convert_to_rub
 
@@ -19,7 +18,6 @@ def test_convert_to_rub_usd_success(mock_get):
     mock_response.status_code = 200
     mock_response.json = Mock(return_value={"rates": {"USD": 1.0}})
     mock_get.return_value = mock_response
-
     transaction = {"amount": 100, "currency": "USD"}
     result = convert_to_rub(transaction)
     assert isinstance(result, float)
@@ -34,7 +32,6 @@ def test_convert_to_rub_eur_success(mock_get):
     mock_response.status_code = 200
     mock_response.json = Mock(return_value={"rates": {"EUR": 0.92}})
     mock_get.return_value = mock_response
-
     transaction = {"amount": 200, "currency": "EUR"}
     result = convert_to_rub(transaction)
     assert isinstance(result, float)
@@ -64,6 +61,5 @@ def test_convert_to_rub_unknown_rate(mock_get):
     mock_response.status_code = 200
     mock_response.json = Mock(return_value={"rates": {}})
     mock_get.return_value = mock_response
-
     transaction = {"amount": 500, "currency": "USD"}
     assert convert_to_rub(transaction) == 500.0
