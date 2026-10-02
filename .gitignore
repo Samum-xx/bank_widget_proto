@@ -35,3 +35,13 @@ htmlcov/
 .env
 *.env
 *.zip
+
+loggs/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+
+masks.log
+utils.log

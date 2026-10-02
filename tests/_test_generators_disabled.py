@@ -1,4 +1,5 @@
 from unittest.mock import patch
+
 from generators import generate_transactions
 
 

@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Callable, Any
+from typing import Any, Callable
 
 
 def log(func: Callable[..., Any]) -> Callable[..., Any]:
