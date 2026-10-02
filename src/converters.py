@@ -1,8 +1,9 @@
 import os
+
 import requests
-from typing import Optional
 
 API_URL = "https://api.exchangerate.host/latest"
+
 
 def convert_to_rub(amount: float, currency: str) -> float:
     """
@@ -39,4 +40,3 @@ def convert_to_rub(amount: float, currency: str) -> float:
     except (requests.RequestException, ValueError, KeyError):
         # Любая ошибка сети, JSON или отсутствующего поля — возвращаем исходную сумму
         return amount
-    

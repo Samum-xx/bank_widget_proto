@@ -1,7 +1,9 @@
-import pytest
 from unittest.mock import patch
-from src.external_api import convert_to_rub
+
+import pytest
+
 from generators.filter_by_currency import filter_by_currency
+from src.external_api import convert_to_rub
 
 
 def test_convert_usd_to_rub():

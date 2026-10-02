@@ -1,7 +1,8 @@
+import logging
+import os
+
 from src.masks.masks import get_mask_card_number
 from src.utils.utils import read_json_file
-import os
-import logging
 
 print("Запуск проверки логирования...")
 
