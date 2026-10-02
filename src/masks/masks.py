@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 
 MODULE_NAME = "masks"
 LOG_FILE = "masks.log"
@@ -37,9 +36,9 @@ def get_mask_card_number(card_number: str) -> str:
 
 def get_mask_account(account_number: str) -> str:
     if not account_number or not account_number.isdigit() or len(account_number) < 4:
-        logger.warning("Некорректный номер счёта: %s", account_number)
-        return "Некорректный номер счёта"
+        logger.warning("Некорректный номер счета: %s", account_number)
+        return "Некорректный номер счета"
 
     result = f"**{account_number[-4:]}"
-    logger.info("Замаскирован номер счёта: %s -> %s", account_number, result)
+    logger.info("Замаскирован номер счета: %s -> %s", account_number, result)
     return result
