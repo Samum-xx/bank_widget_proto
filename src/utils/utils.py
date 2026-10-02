@@ -1,10 +1,29 @@
+import logging
 import json
 from pathlib import Path
 from typing import Any, Dict, List
 
-from src.utils.logging_setup import get_logger
+MODULE_NAME = "utils"
+LOG_FILE = "utils.log"
 
-logger = get_logger("utils", "utils.log", "INFO")
+# Создаём логгер
+logger = logging.getLogger(MODULE_NAME)
+logger.setLevel(logging.DEBUG)  # не меньше, чем DEBUG
+
+# FileHandler
+file_handler = logging.FileHandler(LOG_FILE, encoding="utf-8")
+file_handler.setLevel(logging.DEBUG)
+
+# Formatter: время, модуль (name), уровень, сообщение
+file_formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+file_handler.setFormatter(file_formatter)
+
+# Добавляем handler к логгеру (защита от дублирования при множественных импортах)
+if not logger.handlers:
+    logger.addHandler(file_handler)
 
 
 def read_json_file(path: str) -> Dict[str, Any]:

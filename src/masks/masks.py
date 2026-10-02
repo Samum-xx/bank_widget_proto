@@ -1,6 +1,27 @@
-from src.utils.logging_setup import get_logger
+import logging
+from pathlib import Path
 
-logger = get_logger("masks", "masks.log", "INFO")
+MODULE_NAME = "masks"
+LOG_FILE = "masks.log"
+
+# Создаём логгер
+logger = logging.getLogger(MODULE_NAME)
+logger.setLevel(logging.DEBUG)  # не меньше DEBUG
+
+# FileHandler
+file_handler = logging.FileHandler(LOG_FILE, encoding="utf-8")
+file_handler.setLevel(logging.DEBUG)
+
+# Formatter: время, модуль, уровень, сообщение
+file_formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+file_handler.setFormatter(file_formatter)
+
+# Добавляем handler к логгеру
+if not logger.handlers:  # защита от дублирования при множественных импортах
+    logger.addHandler(file_handler)
 
 
 def get_mask_card_number(card_number: str) -> str:
@@ -16,9 +37,9 @@ def get_mask_card_number(card_number: str) -> str:
 
 def get_mask_account(account_number: str) -> str:
     if not account_number or not account_number.isdigit() or len(account_number) < 4:
-        logger.warning("Некорректный номер счета: %s", account_number)
-        return "Некорректный номер счета"
+        logger.warning("Некорректный номер счёта: %s", account_number)
+        return "Некорректный номер счёта"
 
     result = f"**{account_number[-4:]}"
-    logger.info("Замаскирован номер счета: %s -> %s", account_number, result)
+    logger.info("Замаскирован номер счёта: %s -> %s", account_number, result)
     return result
