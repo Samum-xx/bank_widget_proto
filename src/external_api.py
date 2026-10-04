@@ -34,7 +34,9 @@ def get_exchange_rate(currency: str) -> Optional[float]:
         return None
 
 
-def convert_to_rub(transaction: Dict[str, Any], rate_override: Optional[float] = None) -> float:
+def convert_to_rub(
+    transaction: Dict[str, Any], rate_override: Optional[float] = None
+) -> float:
     """
     Конвертирует сумму транзакции в рубли.
 
