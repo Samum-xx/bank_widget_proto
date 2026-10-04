@@ -34,7 +34,9 @@ def get_exchange_rate(currency: str) -> Optional[float]:
         return None
 
 
-def convert_to_rub(transaction: Dict[str, Any], rate_override: Optional[float] = None) -> float:
+def convert_to_rub(
+    transaction: Dict[str, Any], rate_override: Optional[float] = None
+) -> float:
     """
     Конвертирует сумму транзакции в рубли.
 
@@ -48,6 +50,7 @@ def convert_to_rub(transaction: Dict[str, Any], rate_override: Optional[float] =
     amount = transaction.get("amount", 0.0)
     currency = str(transaction.get("currency", "RUB")).upper()
 
+    # Если валюта уже RUB — ничего не конвертируем
     if currency == "RUB":
         return float(amount)
 
@@ -55,13 +58,18 @@ def convert_to_rub(transaction: Dict[str, Any], rate_override: Optional[float] =
     if currency not in ("USD", "EUR"):
         return float(amount)
 
+    rate: Optional[float]
+
     # Если передан курс для теста — используем его
     if rate_override is not None:
         rate = rate_override
     else:
         # Иначе запрашиваем реальный курс
         rate = get_exchange_rate(currency)
+
+        # Если курс не удалось получить, возвращаем исходную сумму
         if rate is None:
             return float(amount)
 
+    # К этому моменту rate гарантированно не None, поэтому умножение безопасно
     return float(amount * rate)

@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 import pytest
 
 from generators.filter_by_currency import filter_by_currency
@@ -21,6 +19,7 @@ def test_convert_eur_to_rub():
 def test_convert_rub_no_api():
     transaction = {"amount": 1500, "currency": "RUB"}
     result = convert_to_rub(transaction)
+    # Если convert_to_rub для RUB просто возвращает amount, то это сработает
     assert result == 1500.0
 
 

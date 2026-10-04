@@ -1,45 +1,23 @@
 [tool.poetry]
-name = "bank-widget"
+name = "bank-widget-clean"
 version = "0.1.0"
-description = ""
-authors = ["Samum <mariakhusainova9@gmail.com>"]
+description = "Bank widget project"
+authors = ["mariakhusainova9@gmail.com"]
 readme = "README.md"
-
-packages = [
-    { include = "src", from = "." },
-    { include = "generators", from = "." },
-]
+packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-requests = "^2.32.0"
+python = "^3.12"
+pandas = "^2.2.0"
+openpyxl = "^3.1.0"
 python-dotenv = "^1.0.1"
-pytest = "^8.3.0"
-pytest-cov = "^5.0.0"
-flake8 = "^7.0.0"
-isort = "^6.0.0"
+requests = "^2.32.3"
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.0"
+mypy = "^1.14.0"
+isort = "^9.0.2"
 
 [build-system]
 requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.black]
-
-[tool.flake8]
-max-line-length = 119
-exclude = ".venv, .idea, __pycache__, build, dist"
-
-[tool.mypy]
-python_version = "3.10"
-warn_return_any = true
-disallow_untyped_defs = true
-ignore_missing_imports = true
-
-[tool.isort]
-profile = "black"
-line_length = 120
-skip_glob = ["*_disabled.py"]
+build-backend = "poetry-core.masonry.api"
