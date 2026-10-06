@@ -1,53 +1,71 @@
-import os
-import sys
+from src.readers import read_json_file, read_csv_transactions, read_excel_transactions
+from src.filters import process_bank_search
+from datetime import datetime
 
-# --- Блок настройки путей (делает код рабочим везде: в PyCharm, в Docker, на сервере) ---
-current_dir = os.path.dirname(os.path.abspath(__file__))
-src_path = os.path.join(current_dir, "src")
 
-if src_path not in sys.path:
-    sys.path.insert(0, src_path)
-# ------------------------------------------------------------------------------------
+def main():
+    print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
+    print("Выберите необходимый пункт меню:")
+    print("1. Получить информацию о транзакциях из JSON-файла")
+    print("2. Получить информацию о транзакциях из CSV-файла")
+    print("3. Получить информацию о транзакциях из XLSX-файла")
 
-# Теперь импортируем функцию просто из widget (без приставки src)
-from widget import prepare_operations_widget_data
+    choice = input("Ваш выбор: ").strip()
 
-if __name__ == "__main__":
-    # Тестовые данные для проверки логики
-    operations = [
-        {
-            "id": 1,
-            "status": "success",
-            "card_number": "1234 5678 9012 3456",
-            "amount": 1500,
-            "currency": "RUB",
-            "description": "Оплата в магазине",
-            "created_at": "2024-10-05"
-        },
-        {
-            "id": 2,
-            "status": "failed",  # Эта операция должна исчезнуть из результата (фильтр по статусу)
-            "card_number": "1111 2222 3333 4444",
-            "amount": 500,
-            "currency": "RUB",
-            "description": "Ошибка платежа",
-            "created_at": "2024-10-04"
-        },
-        {
-            "id": 3,
-            "status": "success",
-            "card_number": "9999-8888-7777-6666",
-            "amount": 3000,
-            "currency": "USD",
-            "description": "Перевод другу",
-            "created_at": "2024-10-06"
-        },
-    ]
+    data = []
 
-    # Вызываем функцию подготовки данных для виджета
-    result = prepare_operations_widget_data(operations, limit=5)
+    if choice == "1":
+        data = read_json_file("operations.json")
+    elif choice == "2":
+        data = read_csv_transactions("operations.csv")
+    elif choice == "3":
+        data = read_excel_transactions("operations.xlsx")
+    else:
+        print("Неверный пункт меню.")
+        return
 
-    # Выводим результат в консоль
-    print("Результат для виджета:")
-    for op in result:
-        print(op)
+    status = input("Введите статус (EXECUTED, CANCELED, PENDING): ").strip().upper()
+    if status:
+        data = [t for t in data if isinstance(t, dict) and t.get("state") == status]
+        print(f"Операции отфильтрованы по статусу \"{status}\"")
+
+    # Сортировка по дате
+    sort_choice = input("Выполнить сортировку по дате? (да/нет): ").strip().lower()
+    if sort_choice == "да":
+        order = input("Порядок сортировки (по убыванию/по возрастанию): ").strip().lower()
+        reverse = order == "по убыванию"
+
+        def parse_date(op):
+            if not isinstance(op, dict):
+                return None
+            d = op.get("date")
+            if d:
+                try:
+                    return datetime.strptime(d, "%Y-%m-%d")
+                except ValueError:
+                    pass
+            return None
+
+        data.sort(key=parse_date, reverse=reverse)
+        print(f"Операции отсортированы: {'по убыванию' if reverse else 'по возрастанию'}")
+
+    search_choice = input("Выполнить поиск по описанию? (да/нет): ").strip().lower()
+    if search_choice == "да":
+        search_word = input("Введите слово для поиска: ").strip()
+        if search_word:
+            data = process_bank_search(data, search_word)
+            print(f"Выполнен поиск по описанию: \"{search_word}\"")
+
+    if not data:
+        print("Операций не найдено.")
+    else:
+        for op in data:
+            if not isinstance(op, dict):
+                continue
+            description = op.get("description", "Без описания")
+            date_str = op.get("date", "Нет даты")
+            amount = op.get("amount", 0)
+            currency = op.get("currency", "?")
+            print(f"[{date_str}] {description} — {amount} {currency}")
+
+    print(f"Итого отобрано операций: {len(data)}")

@@ -3,8 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.utils import (load_operations, read_csv_transactions,
-                       read_excel_transactions)
+from src.utils import load_operations, read_csv_transactions, read_excel_transactions
 
 # --- Тесты для load_operations (JSON) ---
 

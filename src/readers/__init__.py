@@ -1,6 +1,6 @@
 import csv
+import json
 import logging
-from builtins import open
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -21,18 +21,20 @@ if not logger.handlers:
     logger.addHandler(file_handler)
 
 
+def read_json_file(path: str) -> List[Dict[str, Any]]:
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, list):
+            logger.info("Successfully read JSON file: %s, rows=%d", path, len(data))
+            return data
+        return []
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logger.error("Error reading JSON file %s: %s", path, e)
+        return []
+
+
 def read_csv(path: str) -> List[Dict[str, Any]]:
-    """Считывает финансовые операции из CSV-файла.
-
-    Args:
-        path: Путь к CSV-файлу.
-
-    Returns:
-        Список словарей с транзакциями.
-
-    Raises:
-        FileNotFoundError: Если файл не найден.
-    """
     file_path = Path(path)
     if not file_path.exists():
         msg = f"CSV file not found: {path}"
@@ -48,17 +50,6 @@ def read_csv(path: str) -> List[Dict[str, Any]]:
 
 
 def read_excel(path: str) -> List[Dict[str, Any]]:
-    """Считывает финансовые операции из Excel-файла (.xlsx).
-
-    Args:
-        path: Путь к XLSX-файлу.
-
-    Returns:
-        Список словарей с транзакциями.
-
-    Raises:
-        FileNotFoundError: Если файл не найден.
-    """
     file_path = Path(path)
     if not file_path.exists():
         msg = f"Excel file not found: {path}"
@@ -76,4 +67,13 @@ def read_excel(path: str) -> List[Dict[str, Any]]:
     return result
 
 
-__all__ = ["read_csv", "read_excel"]
+read_csv_transactions = read_csv
+read_excel_transactions = read_excel
+
+__all__ = [
+    "read_json_file",
+    "read_csv",
+    "read_excel",
+    "read_csv_transactions",
+    "read_excel_transactions",
+]

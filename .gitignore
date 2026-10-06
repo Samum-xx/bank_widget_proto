@@ -37,19 +37,17 @@ htmlcov/
 *.zip
 
 loggs/
-__pycache__/
-*.pyc
-.venv/
-.pytest_cache/
-
 
 masks.log
 utils.log
 
-
-.venv/
-__pycache__/
-*.pyc
-.pytest_cache/
 poetry.lock
 *.log
+
+*.venv/
+*__pycache__/
+*.pyc
+*.pytest_cache/
+.mypy_cache/
+.log
+*.idea/

@@ -4,7 +4,6 @@ version = "0.1.0"
 description = "Bank widget project"
 authors = ["mariakhusainova9@gmail.com"]
 readme = "README.md"
-packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -17,7 +16,18 @@ requests = "^2.32.3"
 pytest = "^8.3.0"
 mypy = "^1.14.0"
 isort = "^9.0.2"
+pytest-cov = "^7.1.0"
+flake8 = "^7.0.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry-core.masonry.api"
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "tests"]
+skip = [".venv", "site-packages"]
+
+[tool.flake8]
+max-line-length = 120
+exclude = ".venv,build,dist,*.egg-info,site-packages"

@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "state": "EXECUTED",
+        "date": "2024-10-05",
+        "description": "Оплата в магазине",
+        "amount": 1200,
+        "currency": "RUB"
+    },
+    {
+        "id": 2,
+        "state": "EXECUTED",
+        "date": "2024-09-01",
+        "description": "Перевод другу",
+        "amount": 500,
+        "currency": "RUB"
+    },
+    {
+        "id": 3,
+        "state": "CANCELED",
+        "date": "2024-08-20",
+        "description": "Списание по подписке",
+        "amount": 990,
+        "currency": "RUB"
+    }
+]
