@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 
 MODULE_NAME = "masks"
 LOG_FILE = "masks.log"
